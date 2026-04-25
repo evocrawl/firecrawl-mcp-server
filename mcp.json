@@ -2,12 +2,12 @@
   "name": "@evocrawl/evocrawl-mcp",
   "version": "3.13.0",
   "description": "MCP server for Evocrawl — search, scrape, and interact with the web. Supports both cloud and self-hosted instances. Features include web search, scraping, page interaction, batch processing, and LLM-powered content analysis.",
-  "author": "evocrawl",
+  "author": "superaihuman",
   "license": "MIT",
-  "homepage": "https://github.com/evocrawl/evocrawl-mcp-server#readme",
+  "homepage": "https://github.com/superaihuman/evocrawl-mcp#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/evocrawl/evocrawl-mcp-server.git"
+    "url": "https://github.com/superaihuman/evocrawl-mcp.git"
   },
   "keywords": [
     "mcp",

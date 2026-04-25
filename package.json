@@ -3,7 +3,7 @@
   "version": "3.13.0",
   "description": "MCP server for Evocrawl — search, scrape, and interact with the web. Supports both cloud and self-hosted instances. Features include web search, scraping, page interaction, batch processing, and LLM-powered content analysis.",
   "type": "module",
-  "mcpName": "docs.evocrawl.com/evocrawl-mcp-server",
+  "mcpName": "io.github.superaihuman/evocrawl-mcp-server",
   "bin": {
     "evocrawl-mcp": "dist/index.js"
   },
