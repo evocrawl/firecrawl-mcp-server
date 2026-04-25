@@ -6,7 +6,7 @@ env:
 on:
   push:
     branches:
-      - main
+      - mainmain
   workflow_dispatch:
 
 jobs:
@@ -32,6 +32,6 @@ jobs:
           context: .
           file: ./Dockerfile.service
           push: true
-          tags: ghcr.io/firecrawl/firecrawl-mcp-server:latest
-          cache-from: type=registry,ref=ghcr.io/firecrawl/firecrawl-mcp-server:latest
+          tags: ghcr.io/evocrawl/evocrawl-mcp-server:latest
+          cache-from: type=registry,ref=ghcr.io/evocrawl/evocrawl-mcp-server:latest
           cache-to: type=inline

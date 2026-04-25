@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  evocrawl-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile.service
+    container_name: evocrawl-mcp-server
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=3000
+      - HOST=0.0.0.0
+      - CLOUD_SERVICE=true
+      # Add your Evocrawl API key here or use .env file
+      # - EVOCRAWL_API_KEY=your_api_key_here
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - evocrawl-network
+
+networks:
+  evocrawl-network:
+    driver: bridge

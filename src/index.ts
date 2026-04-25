@@ -1,20 +1,20 @@
 #!/usr/bin/env node
 import dotenv from 'dotenv';
-import { FastMCP, type Logger } from 'firecrawl-fastmcp';
+import { FastMCP, type Logger, type Context } from './lib/FastMCP.js';
 import { z } from 'zod';
-import FirecrawlApp from '@mendable/firecrawl-js';
+import EvocrawlApp from '@evocrawl/js';
 import type { IncomingHttpHeaders } from 'http';
 
 dotenv.config({ debug: false, quiet: true });
 
 interface SessionData {
-  firecrawlApiKey?: string;
+  evocrawlApiKey?: string;
   [key: string]: unknown;
 }
 
 function extractApiKey(headers: IncomingHttpHeaders): string | undefined {
   const headerAuth = headers['authorization'];
-  const headerApiKey = (headers['x-firecrawl-api-key'] ||
+  const headerApiKey = (headers['x-evocrawl-api-key'] ||
     headers['x-api-key']) as string | string[] | undefined;
 
   if (headerApiKey) {
@@ -85,7 +85,7 @@ class ConsoleLogger implements Logger {
 }
 
 const server = new FastMCP<SessionData>({
-  name: 'firecrawl-fastmcp',
+  name: 'evocrawl-fastmcp',
   version: '3.0.0',
   logger: new ConsoleLogger(),
   roots: { enabled: false },
@@ -96,18 +96,18 @@ const server = new FastMCP<SessionData>({
       const apiKey = extractApiKey(request.headers);
 
       if (!apiKey) {
-        throw new Error('Firecrawl API key is required');
+        throw new Error('Evocrawl API key is required');
       }
-      return { firecrawlApiKey: apiKey };
+      return { evocrawlApiKey: apiKey };
     } else {
-      // For self-hosted instances, API key is optional if FIRECRAWL_API_URL is provided
-      if (!process.env.FIRECRAWL_API_KEY && !process.env.FIRECRAWL_API_URL) {
+      // For self-hosted instances, API key is optional if EVOCRAWL_API_URL is provided
+      if (!process.env.EVOCRAWL_API_KEY && !process.env.EVOCRAWL_API_URL) {
         console.error(
-          'Either FIRECRAWL_API_KEY or FIRECRAWL_API_URL must be provided'
+          'Either EVOCRAWL_API_KEY or EVOCRAWL_API_URL must be provided'
         );
         process.exit(1);
       }
-      return { firecrawlApiKey: process.env.FIRECRAWL_API_KEY };
+      return { evocrawlApiKey: process.env.EVOCRAWL_API_KEY };
     }
   },
   // Lightweight health endpoint for LB checks
@@ -119,10 +119,10 @@ const server = new FastMCP<SessionData>({
   },
 });
 
-function createClient(apiKey?: string): FirecrawlApp {
+function createClient(apiKey?: string): EvocrawlApp {
   const config: any = {
-    ...(process.env.FIRECRAWL_API_URL && {
-      apiUrl: process.env.FIRECRAWL_API_URL,
+    ...(process.env.EVOCRAWL_API_URL && {
+      apiUrl: process.env.EVOCRAWL_API_URL,
     }),
   };
 
@@ -131,7 +131,7 @@ function createClient(apiKey?: string): FirecrawlApp {
     config.apiKey = apiKey;
   }
 
-  return new FirecrawlApp(config);
+  return new EvocrawlApp(config);
 }
 
 const ORIGIN = 'mcp-fastmcp';
@@ -139,26 +139,26 @@ const ORIGIN = 'mcp-fastmcp';
 // Safe mode is enabled by default for cloud service to comply with ChatGPT safety requirements
 const SAFE_MODE = process.env.CLOUD_SERVICE === 'true';
 
-function getClient(session?: SessionData): FirecrawlApp {
+function getClient(session?: SessionData): EvocrawlApp {
   // For cloud service, API key is required
   if (process.env.CLOUD_SERVICE === 'true') {
-    if (!session || !session.firecrawlApiKey) {
+    if (!session || !session.evocrawlApiKey) {
       throw new Error('Unauthorized');
     }
-    return createClient(session.firecrawlApiKey);
+    return createClient(session.evocrawlApiKey);
   }
 
-  // For self-hosted instances, API key is optional if FIRECRAWL_API_URL is provided
+  // For self-hosted instances, API key is optional if EVOCRAWL_API_URL is provided
   if (
-    !process.env.FIRECRAWL_API_URL &&
-    (!session || !session.firecrawlApiKey)
+    !process.env.EVOCRAWL_API_URL &&
+    (!session || !session.evocrawlApiKey)
   ) {
     throw new Error(
       'Unauthorized: API key is required when not using a self-hosted instance'
     );
   }
 
-  return createClient(session?.firecrawlApiKey);
+  return createClient(session?.evocrawlApiKey);
 }
 
 function asText(data: unknown): string {
@@ -344,7 +344,7 @@ const scrapeParamsSchema = z.object({
 });
 
 server.addTool({
-  name: 'firecrawl_scrape',
+  name: 'evocrawl_scrape',
   description: `
 Scrape content from a single URL with advanced options.
 This is the most powerful, fastest and most reliable scraper tool, if available you should always default to using this tool for any web scraping needs.
@@ -373,14 +373,14 @@ When the user asks for SPECIFIC data points, you MUST use JSON format with a sch
 If JSON extraction returns empty, minimal, or just navigation content, the page is likely JavaScript-rendered or the content is on a different URL. Try these steps IN ORDER:
 1. **Add waitFor parameter:** Set \`waitFor: 5000\` to \`waitFor: 10000\` to allow JavaScript to render before extraction
 2. **Try a different URL:** If the URL has a hash fragment (#section), try the base URL or look for a direct page URL
-3. **Use firecrawl_map to find the correct page:** Large documentation sites or SPAs often spread content across multiple URLs. Use \`firecrawl_map\` with a \`search\` parameter to discover the specific page containing your target content, then scrape that URL directly.
-   Example: If scraping "https://docs.example.com/reference" fails to find webhook parameters, use \`firecrawl_map\` with \`{"url": "https://docs.example.com/reference", "search": "webhook"}\` to find URLs like "/reference/webhook-events", then scrape that specific page.
-4. **Use firecrawl_agent:** As a last resort for heavily dynamic pages where map+scrape still fails, use the agent which can autonomously navigate and research
+3. **Use evocrawl_map to find the correct page:** Large documentation sites or SPAs often spread content across multiple URLs. Use \`evocrawl_map\` with a \`search\` parameter to discover the specific page containing your target content, then scrape that URL directly.
+   Example: If scraping "https://docs.example.com/reference" fails to find webhook parameters, use \`evocrawl_map\` with \`{"url": "https://docs.example.com/reference", "search": "webhook"}\` to find URLs like "/reference/webhook-events", then scrape that specific page.
+4. **Use evocrawl_agent:** As a last resort for heavily dynamic pages where map+scrape still fails, use the agent which can autonomously navigate and research
 
 **Usage Example (JSON format - REQUIRED for specific data extraction):**
 \`\`\`json
 {
-  "name": "firecrawl_scrape",
+  "name": "evocrawl_scrape",
   "arguments": {
     "url": "https://example.com/api-docs",
     "formats": ["json"],
@@ -421,7 +421,7 @@ If JSON extraction returns empty, minimal, or just navigation content, the page 
 **Usage Example (markdown format - default for most tasks):**
 \`\`\`json
 {
-  "name": "firecrawl_scrape",
+  "name": "evocrawl_scrape",
   "arguments": {
     "url": "https://example.com/article",
     "formats": ["markdown"],
@@ -432,7 +432,7 @@ If JSON extraction returns empty, minimal, or just navigation content, the page 
 **Usage Example (branding format - extract brand identity):**
 \`\`\`json
 {
-  "name": "firecrawl_scrape",
+  "name": "evocrawl_scrape",
   "arguments": {
     "url": "https://example.com",
     "formats": ["branding"]
@@ -452,19 +452,19 @@ ${
   parameters: scrapeParamsSchema,
   execute: async (
     args: unknown,
-    { session, log }: { session?: SessionData; log: Logger }
+    context: Context<SessionData>
   ): Promise<string> => {
     const { url, ...options } = args as { url: string } & Record<
       string,
       unknown
     >;
-    const client = getClient(session);
+    const client = getClient(context.session);
     const transformed = transformScrapeParams(options as Record<string, unknown>);
     const cleaned = removeEmptyTopLevel(transformed);
     if (cleaned.lockdown) {
-      log.info('Scraping URL (lockdown)');
+      context.log.info('Scraping URL (lockdown)');
     } else {
-      log.info('Scraping URL', { url: String(url) });
+      context.log.info('Scraping URL', { url: String(url) });
     }
     const res = await client.scrape(String(url), {
       ...cleaned,
@@ -475,21 +475,21 @@ ${
 });
 
 server.addTool({
-  name: 'firecrawl_map',
+  name: 'evocrawl_map',
   description: `
 Map a website to discover all indexed URLs on the site.
 
 **Best for:** Discovering URLs on a website before deciding what to scrape; finding specific sections or pages within a large site; locating the correct page when scrape returns empty or incomplete results.
 **Not recommended for:** When you already know which specific URL you need (use scrape); when you need the content of the pages (use scrape after mapping).
-**Common mistakes:** Using crawl to discover URLs instead of map; jumping straight to firecrawl_agent when scrape fails instead of using map first to find the right page.
+**Common mistakes:** Using crawl to discover URLs instead of map; jumping straight to evocrawl_agent when scrape fails instead of using map first to find the right page.
 
-**IMPORTANT - Use map before agent:** If \`firecrawl_scrape\` returns empty, minimal, or irrelevant content, use \`firecrawl_map\` with the \`search\` parameter to find the specific page URL containing your target content. This is faster and cheaper than using \`firecrawl_agent\`. Only use the agent as a last resort after map+scrape fails.
+**IMPORTANT - Use map before agent:** If \`evocrawl_scrape\` returns empty, minimal, or irrelevant content, use \`evocrawl_map\` with the \`search\` parameter to find the specific page URL containing your target content. This is faster and cheaper than using \`evocrawl_agent\`. Only use the agent as a last resort after map+scrape fails.
 
 **Prompt Example:** "Find the webhook documentation page on this API docs site."
 **Usage Example (discover all URLs):**
 \`\`\`json
 {
-  "name": "firecrawl_map",
+  "name": "evocrawl_map",
   "arguments": {
     "url": "https://example.com"
   }
@@ -498,7 +498,7 @@ Map a website to discover all indexed URLs on the site.
 **Usage Example (search for specific content - RECOMMENDED when scrape fails):**
 \`\`\`json
 {
-  "name": "firecrawl_map",
+  "name": "evocrawl_map",
   "arguments": {
     "url": "https://docs.example.com/api",
     "search": "webhook events"
@@ -517,15 +517,15 @@ Map a website to discover all indexed URLs on the site.
   }),
   execute: async (
     args: unknown,
-    { session, log }: { session?: SessionData; log: Logger }
+    context: Context<SessionData>
   ): Promise<string> => {
     const { url, ...options } = args as { url: string } & Record<
       string,
       unknown
     >;
-    const client = getClient(session);
+    const client = getClient(context.session);
     const cleaned = removeEmptyTopLevel(options as Record<string, unknown>);
-    log.info('Mapping URL', { url: String(url) });
+    context.log.info('Mapping URL', { url: String(url) });
     const res = await client.map(String(url), {
       ...cleaned,
       origin: ORIGIN,
@@ -535,21 +535,21 @@ Map a website to discover all indexed URLs on the site.
 });
 
 server.addTool({
-  name: 'firecrawl_search',
+  name: 'evocrawl_search',
   description: `
 Search the web and optionally extract content from search results. This is the most powerful web search tool available, and if available you should always default to using this tool for any web search needs.
 
 The query also supports search operators, that you can use if needed to refine the search:
 | Operator | Functionality | Examples |
 ---|-|-|
-| \`"\"\` | Non-fuzzy matches a string of text | \`"Firecrawl"\`
-| \`-\` | Excludes certain keywords or negates other operators | \`-bad\`, \`-site:firecrawl.dev\`
-| \`site:\` | Only returns results from a specified website | \`site:firecrawl.dev\`
-| \`inurl:\` | Only returns results that include a word in the URL | \`inurl:firecrawl\`
-| \`allinurl:\` | Only returns results that include multiple words in the URL | \`allinurl:git firecrawl\`
-| \`intitle:\` | Only returns results that include a word in the title of the page | \`intitle:Firecrawl\`
-| \`allintitle:\` | Only returns results that include multiple words in the title of the page | \`allintitle:firecrawl playground\`
-| \`related:\` | Only returns results that are related to a specific domain | \`related:firecrawl.dev\`
+| \`"\"\` | Non-fuzzy matches a string of text | \`"Evocrawl"\`
+| \`-\` | Excludes certain keywords or negates other operators | \`-bad\`, \`-site:evocrawl.com\`
+| \`site:\` | Only returns results from a specified website | \`site:evocrawl.com\`
+| \`inurl:\` | Only returns results that include a word in the URL | \`inurl:evocrawl\`
+| \`allinurl:\` | Only returns results that include multiple words in the URL | \`allinurl:git evocrawl\`
+| \`intitle:\` | Only returns results that include a word in the title of the page | \`intitle:Evocrawl\`
+| \`allintitle:\` | Only returns results that include multiple words in the title of the page | \`allintitle:evocrawl playground\`
+| \`related:\` | Only returns results that are related to a specific domain | \`related:evocrawl.com\`
 | \`imagesize:\` | Only returns images with exact dimensions | \`imagesize:1920x1080\`
 | \`larger:\` | Only returns images larger than specified dimensions | \`larger:1920x1080\`
 
@@ -559,12 +559,12 @@ The query also supports search operators, that you can use if needed to refine t
 **Prompt Example:** "Find the latest research papers on AI published in 2023."
 **Sources:** web, images, news, default to web unless needed images or news.
 **Scrape Options:** Only use scrapeOptions when you think it is absolutely necessary. When you do so default to a lower limit to avoid timeouts, 5 or lower.
-**Optimal Workflow:** Search first using firecrawl_search without formats, then after fetching the results, use the scrape tool to get the content of the relevantpage(s) that you want to scrape
+**Optimal Workflow:** Search first using evocrawl_search without formats, then after fetching the results, use the scrape tool to get the content of the relevantpage(s) that you want to scrape
 
 **Usage Example without formats (Preferred):**
 \`\`\`json
 {
-  "name": "firecrawl_search",
+  "name": "evocrawl_search",
   "arguments": {
     "query": "top AI companies",
     "limit": 5,
@@ -577,7 +577,7 @@ The query also supports search operators, that you can use if needed to refine t
 **Usage Example with formats:**
 \`\`\`json
 {
-  "name": "firecrawl_search",
+  "name": "evocrawl_search",
   "arguments": {
     "query": "latest AI research papers 2023",
     "limit": 5,
@@ -611,9 +611,9 @@ The query also supports search operators, that you can use if needed to refine t
   }),
   execute: async (
     args: unknown,
-    { session, log }: { session?: SessionData; log: Logger }
+    context: Context<SessionData>
   ): Promise<string> => {
-    const client = getClient(session);
+    const client = getClient(context.session);
     const { query, ...opts } = args as Record<string, unknown>;
 
     const searchOpts = { ...opts } as Record<string, unknown>;
@@ -624,7 +624,7 @@ The query also supports search operators, that you can use if needed to refine t
     }
 
     const cleaned = removeEmptyTopLevel(searchOpts);
-    log.info('Searching', { query: String(query) });
+    context.log.info('Searching', { query: String(query) });
     const res = await client.search(query as string, {
       ...(cleaned as any),
       origin: ORIGIN,
@@ -634,7 +634,7 @@ The query also supports search operators, that you can use if needed to refine t
 });
 
 server.addTool({
-  name: 'firecrawl_crawl',
+  name: 'evocrawl_crawl',
   description: `
  Starts a crawl job on a website and extracts content from all pages.
  
@@ -646,7 +646,7 @@ server.addTool({
  **Usage Example:**
  \`\`\`json
  {
-   "name": "firecrawl_crawl",
+   "name": "evocrawl_crawl",
    "arguments": {
      "url": "https://example.com/blog/*",
      "maxDiscoveryDepth": 5,
@@ -657,7 +657,7 @@ server.addTool({
    }
  }
  \`\`\`
- **Returns:** Operation ID for status checking; use firecrawl_check_crawl_status to check progress.
+ **Returns:** Operation ID for status checking; use evocrawl_check_crawl_status to check progress.
  ${
    SAFE_MODE
      ? '**Safe Mode:** Read-only crawling. Webhooks and interactive actions are disabled for security.'
@@ -713,14 +713,14 @@ server.addTool({
 });
 
 server.addTool({
-  name: 'firecrawl_check_crawl_status',
+  name: 'evocrawl_check_crawl_status',
   description: `
 Check the status of a crawl job.
 
 **Usage Example:**
 \`\`\`json
 {
-  "name": "firecrawl_check_crawl_status",
+  "name": "evocrawl_check_crawl_status",
   "arguments": {
     "id": "550e8400-e29b-41d4-a716-446655440000"
   }
@@ -740,7 +740,7 @@ Check the status of a crawl job.
 });
 
 server.addTool({
-  name: 'firecrawl_extract',
+  name: 'evocrawl_extract',
   description: `
 Extract structured information from web pages using LLM capabilities. Supports both cloud AI and self-hosted LLM extraction.
 
@@ -757,7 +757,7 @@ Extract structured information from web pages using LLM capabilities. Supports b
 **Usage Example:**
 \`\`\`json
 {
-  "name": "firecrawl_extract",
+  "name": "evocrawl_extract",
   "arguments": {
     "urls": ["https://example.com/page1", "https://example.com/page2"],
     "prompt": "Extract product information including name, price, and description",
@@ -788,11 +788,11 @@ Extract structured information from web pages using LLM capabilities. Supports b
   }),
   execute: async (
     args: unknown,
-    { session, log }: { session?: SessionData; log: Logger }
+    context: Context<SessionData>
   ): Promise<string> => {
-    const client = getClient(session);
+    const client = getClient(context.session);
     const a = args as Record<string, unknown>;
-    log.info('Extracting from URLs', {
+    context.log.info('Extracting from URLs', {
       count: Array.isArray(a.urls) ? a.urls.length : 0,
     });
     const extractBody = removeEmptyTopLevel({
@@ -810,15 +810,15 @@ Extract structured information from web pages using LLM capabilities. Supports b
 });
 
 server.addTool({
-  name: 'firecrawl_agent',
+  name: 'evocrawl_agent',
   description: `
 Autonomous web research agent. This is a separate AI agent layer that independently browses the internet, searches for information, navigates through pages, and extracts structured data based on your query. You describe what you need, and the agent figures out where to find it.
 
-**How it works:** The agent performs web searches, follows links, reads pages, and gathers data autonomously. This runs **asynchronously** - it returns a job ID immediately, and you poll \`firecrawl_agent_status\` to check when complete and retrieve results.
+**How it works:** The agent performs web searches, follows links, reads pages, and gathers data autonomously. This runs **asynchronously** - it returns a job ID immediately, and you poll \`evocrawl_agent_status\` to check when complete and retrieve results.
 
 **IMPORTANT - Async workflow with patient polling:**
-1. Call \`firecrawl_agent\` with your prompt/schema → returns job ID immediately
-2. Poll \`firecrawl_agent_status\` with the job ID to check progress
+1. Call \`evocrawl_agent\` with your prompt/schema → returns job ID immediately
+2. Poll \`evocrawl_agent_status\` with the job ID to check progress
 3. **Keep polling for at least 2-3 minutes** - agent research typically takes 1-5 minutes for complex queries
 4. Poll every 15-30 seconds until status is "completed" or "failed"
 5. Do NOT give up after just a few polling attempts - the agent needs time to research
@@ -830,21 +830,21 @@ Autonomous web research agent. This is a separate AI agent layer that independen
 
 **Best for:** Complex research tasks where you don't know the exact URLs; multi-source data gathering; finding information scattered across the web; extracting data from JavaScript-heavy SPAs that fail with regular scrape.
 **Not recommended for:**
-- Single-page extraction when you have a URL (use firecrawl_scrape, faster and cheaper)
-- Web search (use firecrawl_search first)
-- Interactive page tasks like clicking, filling forms, login, or navigating JS-heavy SPAs (use firecrawl_scrape + firecrawl_interact)
-- Extracting specific data from a known page (use firecrawl_scrape with JSON format)
+- Single-page extraction when you have a URL (use evocrawl_scrape, faster and cheaper)
+- Web search (use evocrawl_search first)
+- Interactive page tasks like clicking, filling forms, login, or navigating JS-heavy SPAs (use evocrawl_scrape + evocrawl_interact)
+- Extracting specific data from a known page (use evocrawl_scrape with JSON format)
 
 **Arguments:**
 - prompt: Natural language description of the data you want (required, max 10,000 characters)
 - urls: Optional array of URLs to focus the agent on specific pages
 - schema: Optional JSON schema for structured output
 
-**Prompt Example:** "Find the founders of Firecrawl and their backgrounds"
+**Prompt Example:** "Find the founders of Evocrawl and their backgrounds"
 **Usage Example (start agent, then poll patiently for results):**
 \`\`\`json
 {
-  "name": "firecrawl_agent",
+  "name": "evocrawl_agent",
   "arguments": {
     "prompt": "Find the top 5 AI startups founded in 2024 and their funding amounts",
     "schema": {
@@ -866,19 +866,19 @@ Autonomous web research agent. This is a separate AI agent layer that independen
   }
 }
 \`\`\`
-Then poll with \`firecrawl_agent_status\` every 15-30 seconds for at least 2-3 minutes.
+Then poll with \`evocrawl_agent_status\` every 15-30 seconds for at least 2-3 minutes.
 
 **Usage Example (with URLs - agent focuses on specific pages):**
 \`\`\`json
 {
-  "name": "firecrawl_agent",
+  "name": "evocrawl_agent",
   "arguments": {
-    "urls": ["https://docs.firecrawl.dev", "https://firecrawl.dev/pricing"],
+    "urls": ["https://docs.evocrawl.com", "https://evocrawl.com/pricing"],
     "prompt": "Compare the features and pricing information from these pages"
   }
 }
 \`\`\`
-**Returns:** Job ID for status checking. Use \`firecrawl_agent_status\` to poll for results.
+**Returns:** Job ID for status checking. Use \`evocrawl_agent_status\` to poll for results.
 `,
   parameters: z.object({
     prompt: z.string().min(1).max(10000),
@@ -887,11 +887,11 @@ Then poll with \`firecrawl_agent_status\` every 15-30 seconds for at least 2-3 m
   }),
   execute: async (
     args: unknown,
-    { session, log }: { session?: SessionData; log: Logger }
+    context: Context<SessionData>
   ): Promise<string> => {
-    const client = getClient(session);
+    const client = getClient(context.session);
     const a = args as Record<string, unknown>;
-    log.info('Starting agent', {
+    context.log.info('Starting agent', {
       prompt: (a.prompt as string).substring(0, 100),
       urlCount: Array.isArray(a.urls) ? a.urls.length : 0,
     });
@@ -909,9 +909,9 @@ Then poll with \`firecrawl_agent_status\` every 15-30 seconds for at least 2-3 m
 });
 
 server.addTool({
-  name: 'firecrawl_agent_status',
+  name: 'evocrawl_agent_status',
   description: `
-Check the status of an agent job and retrieve results when complete. Use this to poll for results after starting an agent with \`firecrawl_agent\`.
+Check the status of an agent job and retrieve results when complete. Use this to poll for results after starting an agent with \`evocrawl_agent\`.
 
 **IMPORTANT - Be patient with polling:**
 - Poll every 15-30 seconds
@@ -922,7 +922,7 @@ Check the status of an agent job and retrieve results when complete. Use this to
 **Usage Example:**
 \`\`\`json
 {
-  "name": "firecrawl_agent_status",
+  "name": "evocrawl_agent_status",
   "arguments": {
     "id": "550e8400-e29b-41d4-a716-446655440000"
   }
@@ -938,21 +938,21 @@ Check the status of an agent job and retrieve results when complete. Use this to
   parameters: z.object({ id: z.string() }),
   execute: async (
     args: unknown,
-    { session, log }: { session?: SessionData; log: Logger }
+    context: Context<SessionData>
   ): Promise<string> => {
-    const client = getClient(session);
+    const client = getClient(context.session);
     const { id } = args as { id: string };
-    log.info('Checking agent status', { id });
+    context.log.info('Checking agent status', { id });
     const res = await (client as any).getAgentStatus(id);
     return asText(res);
   },
 });
 
-// Browser session tools (deprecated — prefer firecrawl_scrape + firecrawl_interact)
+// Browser session tools (deprecated — prefer evocrawl_scrape + evocrawl_interact)
 server.addTool({
-  name: 'firecrawl_browser_create',
+  name: 'evocrawl_browser_create',
   description: `
-**DEPRECATED — prefer firecrawl_scrape + firecrawl_interact instead.** Interact lets you scrape a page and then click, fill forms, and navigate without managing sessions manually.
+**DEPRECATED — prefer evocrawl_scrape + evocrawl_interact instead.** Interact lets you scrape a page and then click, fill forms, and navigate without managing sessions manually.
 
 Create a browser session for code execution via CDP (Chrome DevTools Protocol).
 
@@ -967,7 +967,7 @@ Create a browser session for code execution via CDP (Chrome DevTools Protocol).
 **Usage Example:**
 \`\`\`json
 {
-  "name": "firecrawl_browser_create",
+  "name": "evocrawl_browser_create",
   "arguments": {
     "profile": { "name": "my-profile", "saveChanges": true }
   }
@@ -986,12 +986,12 @@ Create a browser session for code execution via CDP (Chrome DevTools Protocol).
   }),
   execute: async (
     args: unknown,
-    { session, log }: { session?: SessionData; log: Logger }
+    context: Context<SessionData>
   ): Promise<string> => {
-    const client = getClient(session);
+    const client = getClient(context.session);
     const a = args as Record<string, unknown>;
     const cleaned = removeEmptyTopLevel(a);
-    log.info('Creating browser session');
+    context.log.info('Creating browser session');
     const res = await client.browser(cleaned as any);
     return asText(res);
   },
@@ -999,12 +999,12 @@ Create a browser session for code execution via CDP (Chrome DevTools Protocol).
 
 if (!SAFE_MODE) {
   server.addTool({
-    name: 'firecrawl_browser_execute',
+    name: 'evocrawl_browser_execute',
     description: `
-**DEPRECATED — prefer firecrawl_scrape + firecrawl_interact instead.** Interact lets you scrape a page and then click, fill forms, and navigate without managing sessions manually.
+**DEPRECATED — prefer evocrawl_scrape + evocrawl_interact instead.** Interact lets you scrape a page and then click, fill forms, and navigate without managing sessions manually.
 
 Execute code in a browser session. Supports agent-browser commands (bash), Python, or JavaScript.
-**Requires:** An active browser session (create one with firecrawl_browser_create first).
+**Requires:** An active browser session (create one with evocrawl_browser_create first).
 
 **Arguments:**
 - sessionId: The browser session ID (required)
@@ -1014,7 +1014,7 @@ Execute code in a browser session. Supports agent-browser commands (bash), Pytho
 **Recommended: Use bash with agent-browser commands** (pre-installed in every sandbox):
 \`\`\`json
 {
-  "name": "firecrawl_browser_execute",
+  "name": "evocrawl_browser_execute",
   "arguments": {
     "sessionId": "session-id-here",
     "code": "agent-browser open https://example.com",
@@ -1041,7 +1041,7 @@ Execute code in a browser session. Supports agent-browser commands (bash), Pytho
 **For Playwright scripting, use Python** (has proper async/await support):
 \`\`\`json
 {
-  "name": "firecrawl_browser_execute",
+  "name": "evocrawl_browser_execute",
   "arguments": {
     "sessionId": "session-id-here",
     "code": "await page.goto('https://example.com')\\ntitle = await page.title()\\nprint(title)",
@@ -1060,15 +1060,15 @@ Execute code in a browser session. Supports agent-browser commands (bash), Pytho
     }),
     execute: async (
       args: unknown,
-      { session, log }: { session?: SessionData; log: Logger }
+      context: Context<SessionData>
     ): Promise<string> => {
-      const client = getClient(session);
+      const client = getClient(context.session);
       const { sessionId, code, language } = args as {
         sessionId: string;
         code: string;
         language?: 'python' | 'node' | 'bash';
       };
-      log.info('Executing code in browser session', { sessionId });
+      context.log.info('Executing code in browser session', { sessionId });
       const res = await client.browserExecute(sessionId, { code, language });
       return asText(res);
     },
@@ -1076,16 +1076,16 @@ Execute code in a browser session. Supports agent-browser commands (bash), Pytho
 }
 
 server.addTool({
-  name: 'firecrawl_browser_delete',
+  name: 'evocrawl_browser_delete',
   description: `
-**DEPRECATED — prefer firecrawl_scrape + firecrawl_interact instead.**
+**DEPRECATED — prefer evocrawl_scrape + evocrawl_interact instead.**
 
 Destroy a browser session.
 
 **Usage Example:**
 \`\`\`json
 {
-  "name": "firecrawl_browser_delete",
+  "name": "evocrawl_browser_delete",
   "arguments": {
     "sessionId": "session-id-here"
   }
@@ -1098,27 +1098,27 @@ Destroy a browser session.
   }),
   execute: async (
     args: unknown,
-    { session, log }: { session?: SessionData; log: Logger }
+    context: Context<SessionData>
   ): Promise<string> => {
-    const client = getClient(session);
+    const client = getClient(context.session);
     const { sessionId } = args as { sessionId: string };
-    log.info('Deleting browser session', { sessionId });
+    context.log.info('Deleting browser session', { sessionId });
     const res = await client.deleteBrowser(sessionId);
     return asText(res);
   },
 });
 
 server.addTool({
-  name: 'firecrawl_browser_list',
+  name: 'evocrawl_browser_list',
   description: `
-**DEPRECATED — prefer firecrawl_scrape + firecrawl_interact instead.**
+**DEPRECATED — prefer evocrawl_scrape + evocrawl_interact instead.**
 
 List browser sessions, optionally filtered by status.
 
 **Usage Example:**
 \`\`\`json
 {
-  "name": "firecrawl_browser_list",
+  "name": "evocrawl_browser_list",
   "arguments": {
     "status": "active"
   }
@@ -1131,11 +1131,11 @@ List browser sessions, optionally filtered by status.
   }),
   execute: async (
     args: unknown,
-    { session, log }: { session?: SessionData; log: Logger }
+    context: Context<SessionData>
   ): Promise<string> => {
-    const client = getClient(session);
+    const client = getClient(context.session);
     const { status } = args as { status?: 'active' | 'destroyed' };
-    log.info('Listing browser sessions', { status });
+    context.log.info('Listing browser sessions', { status });
     const res = await client.listBrowsers({ status });
     return asText(res);
   },
@@ -1143,12 +1143,12 @@ List browser sessions, optionally filtered by status.
 
 // Interact tools (scrape-bound browser sessions)
 server.addTool({
-  name: 'firecrawl_interact',
+  name: 'evocrawl_interact',
   description: `
-Interact with a previously scraped page in a live browser session. Scrape a page first with firecrawl_scrape, then use the returned scrapeId to click buttons, fill forms, extract dynamic content, or navigate deeper.
+Interact with a previously scraped page in a live browser session. Scrape a page first with evocrawl_scrape, then use the returned scrapeId to click buttons, fill forms, extract dynamic content, or navigate deeper.
 
 **Best for:** Multi-step workflows on a single page — searching a site, clicking through results, filling forms, extracting data that requires interaction.
-**Requires:** A scrapeId from a previous firecrawl_scrape call (found in the metadata of the scrape response).
+**Requires:** A scrapeId from a previous evocrawl_scrape call (found in the metadata of the scrape response).
 
 **Arguments:**
 - scrapeId: The scrape job ID from a previous scrape (required)
@@ -1160,7 +1160,7 @@ Interact with a previously scraped page in a live browser session. Scrape a page
 **Usage Example (prompt):**
 \`\`\`json
 {
-  "name": "firecrawl_interact",
+  "name": "evocrawl_interact",
   "arguments": {
     "scrapeId": "scrape-id-from-previous-scrape",
     "prompt": "Click on the first product and tell me its price"
@@ -1171,7 +1171,7 @@ Interact with a previously scraped page in a live browser session. Scrape a page
 **Usage Example (code):**
 \`\`\`json
 {
-  "name": "firecrawl_interact",
+  "name": "evocrawl_interact",
   "arguments": {
     "scrapeId": "scrape-id-from-previous-scrape",
     "code": "agent-browser click @e5",
@@ -1192,9 +1192,9 @@ Interact with a previously scraped page in a live browser session. Scrape a page
   }),
   execute: async (
     args: unknown,
-    { session, log }: { session?: SessionData; log: Logger }
+    context: Context<SessionData>
   ): Promise<string> => {
-    const client = getClient(session);
+    const client = getClient(context.session);
     const { scrapeId, prompt, code, language, timeout } = args as {
       scrapeId: string;
       prompt?: string;
@@ -1202,7 +1202,7 @@ Interact with a previously scraped page in a live browser session. Scrape a page
       language?: 'bash' | 'python' | 'node';
       timeout?: number;
     };
-    log.info('Interacting with scraped page', { scrapeId });
+    context.log.info('Interacting with scraped page', { scrapeId });
     const interactArgs: Record<string, unknown> = { origin: ORIGIN };
     if (prompt) interactArgs.prompt = prompt;
     if (code) interactArgs.code = code;
@@ -1214,14 +1214,14 @@ Interact with a previously scraped page in a live browser session. Scrape a page
 });
 
 server.addTool({
-  name: 'firecrawl_interact_stop',
+  name: 'evocrawl_interact_stop',
   description: `
 Stop an interact session for a scraped page. Call this when you are done interacting to free resources.
 
 **Usage Example:**
 \`\`\`json
 {
-  "name": "firecrawl_interact_stop",
+  "name": "evocrawl_interact_stop",
   "arguments": {
     "scrapeId": "scrape-id-here"
   }
@@ -1234,11 +1234,11 @@ Stop an interact session for a scraped page. Call this when you are done interac
   }),
   execute: async (
     args: unknown,
-    { session, log }: { session?: SessionData; log: Logger }
+    context: Context<SessionData>
   ): Promise<string> => {
-    const client = getClient(session);
+    const client = getClient(context.session);
     const { scrapeId } = args as { scrapeId: string };
-    log.info('Stopping interact session', { scrapeId });
+    context.log.info('Stopping interact session', { scrapeId });
     const res = await client.stopInteraction(scrapeId);
     return asText(res);
   },

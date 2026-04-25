@@ -1,16 +1,6 @@
-<div align="center">
-  <a name="readme-top"></a>
-  <img
-    src="https://raw.githubusercontent.com/firecrawl/firecrawl-mcp-server/main/img/fire.png"
-    height="140"
-  >
-</div>
+# Evocrawl MCP Server
 
-# Firecrawl MCP Server
-
-A Model Context Protocol (MCP) server implementation that integrates with [Firecrawl](https://github.com/firecrawl/firecrawl) for searching, scraping, and interacting with the web.
-
-> Big thanks to [@vrknetha](https://github.com/vrknetha), [@knacklabs](https://www.knacklabs.ai) for the initial implementation!
+A Model Context Protocol (MCP) server implementation that integrates with [Evocrawl](https://github.com/evocrawl/evocrawl) for searching, scraping, and interacting with the web.
 
 ## Features
 
@@ -23,20 +13,20 @@ A Model Context Protocol (MCP) server implementation that integrates with [Firec
 - Cloud and self-hosted support
 - SSE support
 
-> Play around with [our MCP Server on MCP.so's playground](https://mcp.so/playground?server=firecrawl-mcp-server) or on [Klavis AI](https://www.klavis.ai/mcp-servers).
+> Play around with [our MCP Server on MCP.so's playground](https://mcp.so/playground?server=evocrawl-mcp-server) or on [Klavis AI](https://www.klavis.ai/mcp-servers).
 
 ## Installation
 
 ### Running with npx
 
 ```bash
-env FIRECRAWL_API_KEY=fc-YOUR_API_KEY npx -y firecrawl-mcp
+env EVOCRAWL_API_KEY=fc-YOUR_API_KEY npx -y evocrawl-mcp
 ```
 
 ### Manual Installation
 
 ```bash
-npm install -g firecrawl-mcp
+npm install -g evocrawl-mcp
 ```
 
 ### Running on Cursor
@@ -46,7 +36,7 @@ Note: Requires Cursor version 0.45.6+
 For the most up-to-date configuration instructions, please refer to the official Cursor documentation on configuring MCP servers:
 [Cursor MCP Server Configuration Guide](https://docs.cursor.com/context/model-context-protocol#configuring-mcp-servers)
 
-To configure Firecrawl MCP in Cursor **v0.48.6**
+To configure Evocrawl MCP in Cursor **v0.48.6**
 
 1. Open Cursor Settings
 2. Go to Features > MCP Servers
@@ -55,32 +45,32 @@ To configure Firecrawl MCP in Cursor **v0.48.6**
    ```json
    {
      "mcpServers": {
-       "firecrawl-mcp": {
+       "evocrawl-mcp": {
          "command": "npx",
-         "args": ["-y", "firecrawl-mcp"],
+         "args": ["-y", "evocrawl-mcp"],
          "env": {
-           "FIRECRAWL_API_KEY": "YOUR-API-KEY"
+           "EVOCRAWL_API_KEY": "YOUR-API-KEY"
          }
        }
      }
    }
    ```
 
-To configure Firecrawl MCP in Cursor **v0.45.6**
+To configure Evocrawl MCP in Cursor **v0.45.6**
 
 1. Open Cursor Settings
 2. Go to Features > MCP Servers
 3. Click "+ Add New MCP Server"
 4. Enter the following:
-   - Name: "firecrawl-mcp" (or your preferred name)
+   - Name: "evocrawl-mcp" (or your preferred name)
    - Type: "command"
-   - Command: `env FIRECRAWL_API_KEY=your-api-key npx -y firecrawl-mcp`
+   - Command: `env EVOCRAWL_API_KEY=your-api-key npx -y evocrawl-mcp`
 
-> If you are using Windows and are running into issues, try `cmd /c "set FIRECRAWL_API_KEY=your-api-key && npx -y firecrawl-mcp"`
+> If you are using Windows and are running into issues, try `cmd /c "set EVOCRAWL_API_KEY=your-api-key && npx -y evocrawl-mcp"`
 
-Replace `your-api-key` with your Firecrawl API key. If you don't have one yet, you can create an account and get it from https://www.firecrawl.dev/app/api-keys
+Replace `your-api-key` with your Evocrawl API key. If you don't have one yet, you can create an account and get it from https://www.evocrawl.com/app/api-keys
 
-After adding, refresh the MCP server list to see the new tools. The Composer Agent will automatically use Firecrawl MCP when appropriate, but you can explicitly request it by describing your web scraping needs. Access the Composer via Command+L (Mac), select "Agent" next to the submit button, and enter your query.
+After adding, refresh the MCP server list to see the new tools. The Composer Agent will automatically use Evocrawl MCP when appropriate, but you can explicitly request it by describing your web scraping needs. Access the Composer via Command+L (Mac), select "Agent" next to the submit button, and enter your query.
 
 ### Running on Windsurf
 
@@ -89,11 +79,11 @@ Add this to your `./codeium/windsurf/model_config.json`:
 ```json
 {
   "mcpServers": {
-    "mcp-server-firecrawl": {
+    "mcp-server-evocrawl": {
       "command": "npx",
-      "args": ["-y", "firecrawl-mcp"],
+      "args": ["-y", "evocrawl-mcp"],
       "env": {
-        "FIRECRAWL_API_KEY": "YOUR_API_KEY"
+        "EVOCRAWL_API_KEY": "YOUR_API_KEY"
       }
     }
   }
@@ -105,24 +95,24 @@ Add this to your `./codeium/windsurf/model_config.json`:
 To run the server using Streamable HTTP locally instead of the default stdio transport:
 
 ```bash
-env HTTP_STREAMABLE_SERVER=true FIRECRAWL_API_KEY=fc-YOUR_API_KEY npx -y firecrawl-mcp
+env HTTP_STREAMABLE_SERVER=true EVOCRAWL_API_KEY=fc-YOUR_API_KEY npx -y evocrawl-mcp
 ```
 
 Use the url: http://localhost:3000/mcp
 
 ### Installing via Smithery (Legacy)
 
-To install Firecrawl for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@mendableai/mcp-server-firecrawl):
+To install Evocrawl for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@mendableai/mcp-server-evocrawl):
 
 ```bash
-npx -y @smithery/cli install @mendableai/mcp-server-firecrawl --client claude
+npx -y @smithery/cli install @mendableai/mcp-server-evocrawl --client claude
 ```
 
 ### Running on VS Code
 
 For one-click installation, click one of the install buttons below...
 
-[![Install with NPX in VS Code](https://img.shields.io/badge/VS_Code-NPM-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=firecrawl&inputs=%5B%7B%22type%22%3A%22promptString%22%2C%22id%22%3A%22apiKey%22%2C%22description%22%3A%22Firecrawl%20API%20Key%22%2C%22password%22%3Atrue%7D%5D&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22firecrawl-mcp%22%5D%2C%22env%22%3A%7B%22FIRECRAWL_API_KEY%22%3A%22%24%7Binput%3AapiKey%7D%22%7D%7D) [![Install with NPX in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-NPM-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=firecrawl&inputs=%5B%7B%22type%22%3A%22promptString%22%2C%22id%22%3A%22apiKey%22%2C%22description%22%3A%22Firecrawl%20API%20Key%22%2C%22password%22%3Atrue%7D%5D&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22firecrawl-mcp%22%5D%2C%22env%22%3A%7B%22FIRECRAWL_API_KEY%22%3A%22%24%7Binput%3AapiKey%7D%22%7D%7D&quality=insiders)
+[![Install with NPX in VS Code](https://img.shields.io/badge/VS_Code-NPM-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=evocrawl&inputs=%5B%7B%22type%22%3A%22promptString%22%2C%22id%22%3A%22apiKey%22%2C%22description%22%3A%22Evocrawl%20API%20Key%22%2C%22password%22%3Atrue%7D%5D&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22evocrawl-mcp%22%5D%2C%22env%22%3A%7B%22EVOCRAWL_API_KEY%22%3A%22%24%7Binput%3AapiKey%7D%22%7D%7D) [![Install with NPX in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-NPM-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=evocrawl&inputs=%5B%7B%22type%22%3A%22promptString%22%2C%22id%22%3A%22apiKey%22%2C%22description%22%3A%22Evocrawl%20API%20Key%22%2C%22password%22%3Atrue%7D%5D&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22evocrawl-mcp%22%5D%2C%22env%22%3A%7B%22EVOCRAWL_API_KEY%22%3A%22%24%7Binput%3AapiKey%7D%22%7D%7D&quality=insiders)
 
 For manual installation, add the following JSON block to your User Settings (JSON) file in VS Code. You can do this by pressing `Ctrl + Shift + P` and typing `Preferences: Open User Settings (JSON)`.
 
@@ -133,16 +123,16 @@ For manual installation, add the following JSON block to your User Settings (JSO
       {
         "type": "promptString",
         "id": "apiKey",
-        "description": "Firecrawl API Key",
+        "description": "Evocrawl API Key",
         "password": true
       }
     ],
     "servers": {
-      "firecrawl": {
+      "evocrawl": {
         "command": "npx",
-        "args": ["-y", "firecrawl-mcp"],
+        "args": ["-y", "evocrawl-mcp"],
         "env": {
-          "FIRECRAWL_API_KEY": "${input:apiKey}"
+          "EVOCRAWL_API_KEY": "${input:apiKey}"
         }
       }
     }
@@ -158,16 +148,16 @@ Optionally, you can add it to a file called `.vscode/mcp.json` in your workspace
     {
       "type": "promptString",
       "id": "apiKey",
-      "description": "Firecrawl API Key",
+      "description": "Evocrawl API Key",
       "password": true
     }
   ],
   "servers": {
-    "firecrawl": {
+    "evocrawl": {
       "command": "npx",
-      "args": ["-y", "firecrawl-mcp"],
+      "args": ["-y", "evocrawl-mcp"],
       "env": {
-        "FIRECRAWL_API_KEY": "${input:apiKey}"
+        "EVOCRAWL_API_KEY": "${input:apiKey}"
       }
     }
   }
@@ -180,26 +170,26 @@ Optionally, you can add it to a file called `.vscode/mcp.json` in your workspace
 
 #### Required for Cloud API
 
-- `FIRECRAWL_API_KEY`: Your Firecrawl API key
+- `EVOCRAWL_API_KEY`: Your Evocrawl API key
   - Required when using cloud API (default)
-  - Optional when using self-hosted instance with `FIRECRAWL_API_URL`
-- `FIRECRAWL_API_URL` (Optional): Custom API endpoint for self-hosted instances
-  - Example: `https://firecrawl.your-domain.com`
+  - Optional when using self-hosted instance with `EVOCRAWL_API_URL`
+- `EVOCRAWL_API_URL` (Optional): Custom API endpoint for self-hosted instances
+  - Example: `https://evocrawl.your-domain.com`
   - If not provided, the cloud API will be used (requires API key)
 
 #### Optional Configuration
 
 ##### Retry Configuration
 
-- `FIRECRAWL_RETRY_MAX_ATTEMPTS`: Maximum number of retry attempts (default: 3)
-- `FIRECRAWL_RETRY_INITIAL_DELAY`: Initial delay in milliseconds before first retry (default: 1000)
-- `FIRECRAWL_RETRY_MAX_DELAY`: Maximum delay in milliseconds between retries (default: 10000)
-- `FIRECRAWL_RETRY_BACKOFF_FACTOR`: Exponential backoff multiplier (default: 2)
+- `EVOCRAWL_RETRY_MAX_ATTEMPTS`: Maximum number of retry attempts (default: 3)
+- `EVOCRAWL_RETRY_INITIAL_DELAY`: Initial delay in milliseconds before first retry (default: 1000)
+- `EVOCRAWL_RETRY_MAX_DELAY`: Maximum delay in milliseconds between retries (default: 10000)
+- `EVOCRAWL_RETRY_BACKOFF_FACTOR`: Exponential backoff multiplier (default: 2)
 
 ##### Credit Usage Monitoring
 
-- `FIRECRAWL_CREDIT_WARNING_THRESHOLD`: Credit usage warning threshold (default: 1000)
-- `FIRECRAWL_CREDIT_CRITICAL_THRESHOLD`: Credit usage critical threshold (default: 100)
+- `EVOCRAWL_CREDIT_WARNING_THRESHOLD`: Credit usage warning threshold (default: 1000)
+- `EVOCRAWL_CREDIT_CRITICAL_THRESHOLD`: Credit usage critical threshold (default: 100)
 
 ### Configuration Examples
 
@@ -207,31 +197,31 @@ For cloud API usage with custom retry and credit monitoring:
 
 ```bash
 # Required for cloud API
-export FIRECRAWL_API_KEY=your-api-key
+export EVOCRAWL_API_KEY=your-api-key
 
 # Optional retry configuration
-export FIRECRAWL_RETRY_MAX_ATTEMPTS=5        # Increase max retry attempts
-export FIRECRAWL_RETRY_INITIAL_DELAY=2000    # Start with 2s delay
-export FIRECRAWL_RETRY_MAX_DELAY=30000       # Maximum 30s delay
-export FIRECRAWL_RETRY_BACKOFF_FACTOR=3      # More aggressive backoff
+export EVOCRAWL_RETRY_MAX_ATTEMPTS=5        # Increase max retry attempts
+export EVOCRAWL_RETRY_INITIAL_DELAY=2000    # Start with 2s delay
+export EVOCRAWL_RETRY_MAX_DELAY=30000       # Maximum 30s delay
+export EVOCRAWL_RETRY_BACKOFF_FACTOR=3      # More aggressive backoff
 
 # Optional credit monitoring
-export FIRECRAWL_CREDIT_WARNING_THRESHOLD=2000    # Warning at 2000 credits
-export FIRECRAWL_CREDIT_CRITICAL_THRESHOLD=500    # Critical at 500 credits
+export EVOCRAWL_CREDIT_WARNING_THRESHOLD=2000    # Warning at 2000 credits
+export EVOCRAWL_CREDIT_CRITICAL_THRESHOLD=500    # Critical at 500 credits
 ```
 
 For self-hosted instance:
 
 ```bash
 # Required for self-hosted
-export FIRECRAWL_API_URL=https://firecrawl.your-domain.com
+export EVOCRAWL_API_URL=https://evocrawl.your-domain.com
 
 # Optional authentication for self-hosted
-export FIRECRAWL_API_KEY=your-api-key  # If your instance requires auth
+export EVOCRAWL_API_KEY=your-api-key  # If your instance requires auth
 
 # Custom retry configuration
-export FIRECRAWL_RETRY_MAX_ATTEMPTS=10
-export FIRECRAWL_RETRY_INITIAL_DELAY=500     # Start with faster retries
+export EVOCRAWL_RETRY_MAX_ATTEMPTS=10
+export EVOCRAWL_RETRY_INITIAL_DELAY=500     # Start with faster retries
 ```
 
 ### Usage with Claude Desktop
@@ -241,19 +231,19 @@ Add this to your `claude_desktop_config.json`:
 ```json
 {
   "mcpServers": {
-    "mcp-server-firecrawl": {
+    "mcp-server-evocrawl": {
       "command": "npx",
-      "args": ["-y", "firecrawl-mcp"],
+      "args": ["-y", "evocrawl-mcp"],
       "env": {
-        "FIRECRAWL_API_KEY": "YOUR_API_KEY_HERE",
+        "EVOCRAWL_API_KEY": "YOUR_API_KEY_HERE",
 
-        "FIRECRAWL_RETRY_MAX_ATTEMPTS": "5",
-        "FIRECRAWL_RETRY_INITIAL_DELAY": "2000",
-        "FIRECRAWL_RETRY_MAX_DELAY": "30000",
-        "FIRECRAWL_RETRY_BACKOFF_FACTOR": "3",
+        "EVOCRAWL_RETRY_MAX_ATTEMPTS": "5",
+        "EVOCRAWL_RETRY_INITIAL_DELAY": "2000",
+        "EVOCRAWL_RETRY_MAX_DELAY": "30000",
+        "EVOCRAWL_RETRY_BACKOFF_FACTOR": "3",
 
-        "FIRECRAWL_CREDIT_WARNING_THRESHOLD": "2000",
-        "FIRECRAWL_CREDIT_CRITICAL_THRESHOLD": "500"
+        "EVOCRAWL_CREDIT_WARNING_THRESHOLD": "2000",
+        "EVOCRAWL_CREDIT_CRITICAL_THRESHOLD": "500"
       }
     }
   }
@@ -300,7 +290,7 @@ These configurations control:
 
 ### Rate Limiting and Batch Processing
 
-The server utilizes Firecrawl's built-in rate limiting and batch processing capabilities:
+The server utilizes Evocrawl's built-in rate limiting and batch processing capabilities:
 
 - Automatic rate limit handling with exponential backoff
 - Efficient parallel processing for batch operations
@@ -343,7 +333,7 @@ When using `scrape` or `batch_scrape`, choose the right format:
 
 ## Available Tools
 
-### 1. Scrape Tool (`firecrawl_scrape`)
+### 1. Scrape Tool (`evocrawl_scrape`)
 
 Scrape content from a single URL with advanced options.
 
@@ -374,7 +364,7 @@ Scrape content from a single URL with advanced options.
 
 ```json
 {
-  "name": "firecrawl_scrape",
+  "name": "evocrawl_scrape",
   "arguments": {
     "url": "https://example.com/product",
     "formats": [{
@@ -398,7 +388,7 @@ Scrape content from a single URL with advanced options.
 
 ```json
 {
-  "name": "firecrawl_scrape",
+  "name": "evocrawl_scrape",
   "arguments": {
     "url": "https://example.com/article",
     "formats": ["markdown"],
@@ -411,7 +401,7 @@ Scrape content from a single URL with advanced options.
 
 ```json
 {
-  "name": "firecrawl_scrape",
+  "name": "evocrawl_scrape",
   "arguments": {
     "url": "https://example.com",
     "formats": ["branding"]
@@ -425,7 +415,7 @@ Scrape content from a single URL with advanced options.
 
 - JSON structured data, markdown, branding profile, or other formats as specified.
 
-### 2. Batch Scrape Tool (`firecrawl_batch_scrape`)
+### 2. Batch Scrape Tool (`evocrawl_batch_scrape`)
 
 Scrape multiple URLs efficiently with built-in rate limiting and parallel processing.
 
@@ -450,7 +440,7 @@ Scrape multiple URLs efficiently with built-in rate limiting and parallel proces
 
 ```json
 {
-  "name": "firecrawl_batch_scrape",
+  "name": "evocrawl_batch_scrape",
   "arguments": {
     "urls": ["https://example1.com", "https://example2.com"],
     "options": {
@@ -470,27 +460,27 @@ Scrape multiple URLs efficiently with built-in rate limiting and parallel proces
   "content": [
     {
       "type": "text",
-      "text": "Batch operation queued with ID: batch_1. Use firecrawl_check_batch_status to check progress."
+      "text": "Batch operation queued with ID: batch_1. Use evocrawl_check_batch_status to check progress."
     }
   ],
   "isError": false
 }
 ```
 
-### 3. Check Batch Status (`firecrawl_check_batch_status`)
+### 3. Check Batch Status (`evocrawl_check_batch_status`)
 
 Check the status of a batch operation.
 
 ```json
 {
-  "name": "firecrawl_check_batch_status",
+  "name": "evocrawl_check_batch_status",
   "arguments": {
     "id": "batch_1"
   }
 }
 ```
 
-### 4. Map Tool (`firecrawl_map`)
+### 4. Map Tool (`evocrawl_map`)
 
 Map a website to discover all indexed URLs on the site.
 
@@ -516,7 +506,7 @@ Map a website to discover all indexed URLs on the site.
 
 ```json
 {
-  "name": "firecrawl_map",
+  "name": "evocrawl_map",
   "arguments": {
     "url": "https://example.com"
   }
@@ -527,7 +517,7 @@ Map a website to discover all indexed URLs on the site.
 
 - Array of URLs found on the site
 
-### 5. Search Tool (`firecrawl_search`)
+### 5. Search Tool (`evocrawl_search`)
 
 Search the web and optionally extract content from search results.
 
@@ -549,7 +539,7 @@ Search the web and optionally extract content from search results.
 
 ```json
 {
-  "name": "firecrawl_search",
+  "name": "evocrawl_search",
   "arguments": {
     "query": "latest AI research papers 2023",
     "limit": 5,
@@ -571,7 +561,7 @@ Search the web and optionally extract content from search results.
 
 > "Find the latest research papers on AI published in 2023."
 
-### 6. Crawl Tool (`firecrawl_crawl`)
+### 6. Crawl Tool (`evocrawl_crawl`)
 
 Starts an asynchronous crawl job on a website and extract content from all pages.
 
@@ -600,7 +590,7 @@ Starts an asynchronous crawl job on a website and extract content from all pages
 
 ```json
 {
-  "name": "firecrawl_crawl",
+  "name": "evocrawl_crawl",
   "arguments": {
     "url": "https://example.com/blog/*",
     "maxDepth": 2,
@@ -620,20 +610,20 @@ Starts an asynchronous crawl job on a website and extract content from all pages
   "content": [
     {
       "type": "text",
-      "text": "Started crawl for: https://example.com/* with job ID: 550e8400-e29b-41d4-a716-446655440000. Use firecrawl_check_crawl_status to check progress."
+      "text": "Started crawl for: https://example.com/* with job ID: 550e8400-e29b-41d4-a716-446655440000. Use evocrawl_check_crawl_status to check progress."
     }
   ],
   "isError": false
 }
 ```
 
-### 7. Check Crawl Status (`firecrawl_check_crawl_status`)
+### 7. Check Crawl Status (`evocrawl_check_crawl_status`)
 
 Check the status of a crawl job.
 
 ```json
 {
-  "name": "firecrawl_check_crawl_status",
+  "name": "evocrawl_check_crawl_status",
   "arguments": {
     "id": "550e8400-e29b-41d4-a716-446655440000"
   }
@@ -644,7 +634,7 @@ Check the status of a crawl job.
 
 - Response includes the status of the crawl job:
 
-### 8. Extract Tool (`firecrawl_extract`)
+### 8. Extract Tool (`evocrawl_extract`)
 
 Extract structured information from web pages using LLM capabilities. Supports both cloud AI and self-hosted LLM extraction.
 
@@ -667,7 +657,7 @@ Extract structured information from web pages using LLM capabilities. Supports b
 - `enableWebSearch`: Enable web search for additional context
 - `includeSubdomains`: Include subdomains in extraction
 
-When using a self-hosted instance, the extraction will use your configured LLM. For cloud API, it uses Firecrawl's managed LLM service.
+When using a self-hosted instance, the extraction will use your configured LLM. For cloud API, it uses Evocrawl's managed LLM service.
 **Prompt Example:**
 
 > "Extract the product name, price, and description from these product pages."
@@ -676,7 +666,7 @@ When using a self-hosted instance, the extraction will use your configured LLM. 
 
 ```json
 {
-  "name": "firecrawl_extract",
+  "name": "evocrawl_extract",
   "arguments": {
     "urls": ["https://example.com/page1", "https://example.com/page2"],
     "prompt": "Extract product information including name, price, and description",
@@ -717,19 +707,19 @@ When using a self-hosted instance, the extraction will use your configured LLM. 
 }
 ```
 
-### 9. Agent Tool (`firecrawl_agent`)
+### 9. Agent Tool (`evocrawl_agent`)
 
 Autonomous web research agent. This is a separate AI agent layer that independently browses the internet, searches for information, navigates through pages, and extracts structured data based on your query.
 
 **How it works:**
 
-The agent performs web searches, follows links, reads pages, and gathers data autonomously. This runs **asynchronously** - it returns a job ID immediately, and you poll `firecrawl_agent_status` to check when complete and retrieve results.
+The agent performs web searches, follows links, reads pages, and gathers data autonomously. This runs **asynchronously** - it returns a job ID immediately, and you poll `evocrawl_agent_status` to check when complete and retrieve results.
 
 **Async workflow:**
 
-1. Call `firecrawl_agent` with your prompt/schema → returns job ID
+1. Call `evocrawl_agent` with your prompt/schema → returns job ID
 2. Do other work while the agent researches (can take minutes for complex queries)
-3. Poll `firecrawl_agent_status` with the job ID to check progress
+3. Poll `evocrawl_agent_status` with the job ID to check progress
 4. When status is "completed", the response includes the extracted data
 
 **Best for:**
@@ -751,13 +741,13 @@ The agent performs web searches, follows links, reads pages, and gathers data au
 
 **Prompt Example:**
 
-> "Find the founders of Firecrawl and their backgrounds"
+> "Find the founders of Evocrawl and their backgrounds"
 
 **Usage Example (start agent, then poll for results):**
 
 ```json
 {
-  "name": "firecrawl_agent",
+  "name": "evocrawl_agent",
   "arguments": {
     "prompt": "Find the top 5 AI startups founded in 2024 and their funding amounts",
     "schema": {
@@ -780,15 +770,15 @@ The agent performs web searches, follows links, reads pages, and gathers data au
 }
 ```
 
-Then poll with `firecrawl_agent_status` using the returned job ID.
+Then poll with `evocrawl_agent_status` using the returned job ID.
 
 **Usage Example (with URLs - agent focuses on specific pages):**
 
 ```json
 {
-  "name": "firecrawl_agent",
+  "name": "evocrawl_agent",
   "arguments": {
-    "urls": ["https://docs.firecrawl.dev", "https://firecrawl.dev/pricing"],
+    "urls": ["https://docs.evocrawl.com", "https://evocrawl.com/pricing"],
     "prompt": "Compare the features and pricing information from these pages"
   }
 }
@@ -796,9 +786,9 @@ Then poll with `firecrawl_agent_status` using the returned job ID.
 
 **Returns:**
 
-- Job ID for status checking. Use `firecrawl_agent_status` to poll for results.
+- Job ID for status checking. Use `evocrawl_agent_status` to poll for results.
 
-### 10. Check Agent Status (`firecrawl_agent_status`)
+### 10. Check Agent Status (`evocrawl_agent_status`)
 
 Check the status of an agent job and retrieve results when complete. Use this to poll for results after starting an agent.
 
@@ -806,7 +796,7 @@ Check the status of an agent job and retrieve results when complete. Use this to
 
 ```json
 {
-  "name": "firecrawl_agent_status",
+  "name": "evocrawl_agent_status",
   "arguments": {
     "id": "550e8400-e29b-41d4-a716-446655440000"
   }
@@ -819,9 +809,9 @@ Check the status of an agent job and retrieve results when complete. Use this to
 - `completed`: Research finished - response includes the extracted data
 - `failed`: An error occurred
 
-### 11. Browser Create (`firecrawl_browser_create`) — Deprecated
+### 11. Browser Create (`evocrawl_browser_create`) — Deprecated
 
-> **Deprecated:** Prefer `firecrawl_scrape` + `firecrawl_interact` instead. Interact lets you scrape a page and then click, fill forms, and navigate without managing sessions manually.
+> **Deprecated:** Prefer `evocrawl_scrape` + `evocrawl_interact` instead. Interact lets you scrape a page and then click, fill forms, and navigate without managing sessions manually.
 
 Create a cloud browser session for interactive automation.
 
@@ -838,7 +828,7 @@ Create a cloud browser session for interactive automation.
 
 ```json
 {
-  "name": "firecrawl_browser_create",
+  "name": "evocrawl_browser_create",
   "arguments": {
     "ttl": 600,
     "profile": { "name": "my-profile", "saveChanges": true }
@@ -850,9 +840,9 @@ Create a cloud browser session for interactive automation.
 
 - Session ID, CDP URL, and live view URL
 
-### 12. Browser Execute (`firecrawl_browser_execute`) — Deprecated
+### 12. Browser Execute (`evocrawl_browser_execute`) — Deprecated
 
-> **Deprecated:** Prefer `firecrawl_scrape` + `firecrawl_interact` instead.
+> **Deprecated:** Prefer `evocrawl_scrape` + `evocrawl_interact` instead.
 
 Execute code in a browser session. Supports agent-browser commands (bash), Python, or JavaScript.
 
@@ -860,7 +850,7 @@ Execute code in a browser session. Supports agent-browser commands (bash), Pytho
 
 ```json
 {
-  "name": "firecrawl_browser_execute",
+  "name": "evocrawl_browser_execute",
   "arguments": {
     "sessionId": "session-id-here",
     "code": "agent-browser open https://example.com",
@@ -885,7 +875,7 @@ Execute code in a browser session. Supports agent-browser commands (bash), Pytho
 
 ```json
 {
-  "name": "firecrawl_browser_execute",
+  "name": "evocrawl_browser_execute",
   "arguments": {
     "sessionId": "session-id-here",
     "code": "await page.goto('https://example.com')\ntitle = await page.title()\nprint(title)",
@@ -894,30 +884,30 @@ Execute code in a browser session. Supports agent-browser commands (bash), Pytho
 }
 ```
 
-### 13. Browser List (`firecrawl_browser_list`) — Deprecated
+### 13. Browser List (`evocrawl_browser_list`) — Deprecated
 
-> **Deprecated:** Prefer `firecrawl_scrape` + `firecrawl_interact` instead.
+> **Deprecated:** Prefer `evocrawl_scrape` + `evocrawl_interact` instead.
 
 List browser sessions, optionally filtered by status.
 
 ```json
 {
-  "name": "firecrawl_browser_list",
+  "name": "evocrawl_browser_list",
   "arguments": {
     "status": "active"
   }
 }
 ```
 
-### 14. Browser Delete (`firecrawl_browser_delete`) — Deprecated
+### 14. Browser Delete (`evocrawl_browser_delete`) — Deprecated
 
-> **Deprecated:** Prefer `firecrawl_scrape` + `firecrawl_interact` instead.
+> **Deprecated:** Prefer `evocrawl_scrape` + `evocrawl_interact` instead.
 
 Destroy a browser session.
 
 ```json
 {
-  "name": "firecrawl_browser_delete",
+  "name": "evocrawl_browser_delete",
   "arguments": {
     "sessionId": "session-id-here"
   }
@@ -937,7 +927,7 @@ The server includes comprehensive logging:
 Example log messages:
 
 ```
-[INFO] Firecrawl MCP Server initialized successfully
+[INFO] Evocrawl MCP Server initialized successfully
 [INFO] Starting scrape for URL: https://example.com
 [INFO] Batch operation queued with ID: batch_1
 [WARNING] Credit usage has reached warning threshold
@@ -980,20 +970,3 @@ npm run build
 # Run tests
 npm test
 ```
-
-### Contributing
-
-1. Fork the repository
-2. Create your feature branch
-3. Run tests: `npm test`
-4. Submit a pull request
-
-### Thanks to contributors
-
-Thanks to [@vrknetha](https://github.com/vrknetha), [@cawstudios](https://caw.tech) for the initial implementation!
-
-Thanks to MCP.so and Klavis AI for hosting and [@gstarwd](https://github.com/gstarwd), [@xiangkaiz](https://github.com/xiangkaiz) and [@zihaolin96](https://github.com/zihaolin96) for integrating our server.
-
-## License
-
-MIT License - see LICENSE file for details

@@ -1,11 +1,11 @@
 {
-  "name": "firecrawl-mcp",
+  "name": "evocrawl-mcp",
   "version": "3.13.0",
-  "description": "MCP server for Firecrawl — search, scrape, and interact with the web. Supports both cloud and self-hosted instances. Features include web search, scraping, page interaction, batch processing, and LLM-powered content analysis.",
+  "description": "MCP server for Evocrawl — search, scrape, and interact with the web. Supports both cloud and self-hosted instances. Features include web search, scraping, page interaction, batch processing, and LLM-powered content analysis.",
   "type": "module",
-  "mcpName": "io.github.firecrawl/firecrawl-mcp-server",
+  "mcpName": "docs.evocrawl.com/evocrawl-mcp-server",
   "bin": {
-    "firecrawl-mcp": "dist/index.js"
+    "evocrawl-mcp": "dist/index.js"
   },
   "files": [
     "dist"
@@ -28,32 +28,45 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@mendable/firecrawl-js": "4.17.0",
+    "@evocrawl/js": "4.18.3",
+    "@modelcontextprotocol/sdk": "1.18.0",
+    "@standard-schema/spec": "^1.0.0",
     "dotenv": "^17.2.2",
-    "firecrawl-fastmcp": "^1.0.4",
-    "typescript": "^5.9.2",
-    "zod": "^4.1.5"
+    "execa": "^9.6.0",
+    "file-type": "^21.0.0",
+    "fuse.js": "^7.1.0",
+    "mcp-proxy": "^5.5.4",
+    "strict-event-emitter-types": "^2.0.0",
+    "uri-templates": "^0.2.0",
+    "xsschema": "0.3.5",
+    "zod": "^4.1.5",
+    "zod-to-json-schema": "^3.24.6"
   },
   "engines": {
     "node": ">=18.0.0"
   },
   "keywords": [
     "mcp",
-    "firecrawl",
+    "evocrawl",
     "web-search",
     "web-data",
     "web-interaction"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/firecrawl/firecrawl-mcp-server.git"
+    "url": "git+https://github.com/evocrawl/evocrawl-mcp-server.git"
   },
-  "author": "firecrawl",
+  "author": "evocrawl",
   "bugs": {
-    "url": "https://github.com/firecrawl/firecrawl-mcp-server/issues"
+    "url": "https://github.com/evocrawl/evocrawl-mcp-server/issues"
   },
-  "homepage": "https://github.com/firecrawl/firecrawl-mcp-server#readme",
+  "homepage": "https://github.com/evocrawl/evocrawl-mcp-server#readme",
   "devDependencies": {
-    "@types/node": "^24.3.1"
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.3.1",
+    "@types/uri-templates": "^0.1.34",
+    "jest": "^30.3.0",
+    "ts-jest": "^29.4.9",
+    "typescript": "^5.9.2"
   }
 }

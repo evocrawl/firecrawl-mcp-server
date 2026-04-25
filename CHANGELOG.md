@@ -19,12 +19,12 @@
 ### Changed
 
 - Made retry and credit monitoring settings configurable via environment variables:
-  - `FIRECRAWL_RETRY_MAX_ATTEMPTS`
-  - `FIRECRAWL_RETRY_INITIAL_DELAY`
-  - `FIRECRAWL_RETRY_MAX_DELAY`
-  - `FIRECRAWL_RETRY_BACKOFF_FACTOR`
-  - `FIRECRAWL_CREDIT_WARNING_THRESHOLD`
-  - `FIRECRAWL_CREDIT_CRITICAL_THRESHOLD`
+  - `EVOCRAWL_RETRY_MAX_ATTEMPTS`
+  - `EVOCRAWL_RETRY_INITIAL_DELAY`
+  - `EVOCRAWL_RETRY_MAX_DELAY`
+  - `EVOCRAWL_RETRY_BACKOFF_FACTOR`
+  - `EVOCRAWL_CREDIT_WARNING_THRESHOLD`
+  - `EVOCRAWL_CREDIT_CRITICAL_THRESHOLD`
 - Enhanced configuration examples with detailed comments and use cases
 - Improved documentation for retry behavior and credit monitoring
 
@@ -39,7 +39,7 @@
 
 ### Changed
 
-- Removed redundant batch configuration to rely on Firecrawl library's built-in functionality
+- Removed redundant batch configuration to rely on Evocrawl library's built-in functionality
 - Simplified batch processing logic by leveraging library's native implementation
 - Optimized parallel processing and rate limiting handling
 - Reduced code complexity and potential configuration conflicts
@@ -73,9 +73,9 @@
 - Integrated credit usage monitoring with warning thresholds
 - Enhanced content validation with configurable criteria
 - Added comprehensive logging system for operations and errors
-- New search tool (`firecrawl_search`) for web search with content extraction
-- Support for self-hosted Firecrawl instances via optional API URL configuration
-  - New `FIRECRAWL_API_URL` environment variable
+- New search tool (`evocrawl_search`) for web search with content extraction
+- Support for self-hosted Evocrawl instances via optional API URL configuration
+  - New `EVOCRAWL_API_URL` environment variable
   - Automatic fallback to cloud API
   - Improved error messages for self-hosted instances
 

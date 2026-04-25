@@ -1,0 +1,62 @@
+# Source files
+src/
+*.ts
+tsconfig.json
+
+# Test files
+*.test.ts
+test/
+tests/
+jest.config.js
+vitest.config.js
+
+# Docker files
+Dockerfile*
+docker/
+docker-compose.yml
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+
+# Documentation
+*.md
+docs/
+
+# Development files
+.eslintrc*
+.prettierrc*
+.editorconfig
+
+# Environment files
+.env*
+.env.example
+
+# Build artifacts (keep dist/)
+dist/*.map
+
+# Lock files (npm/pnpm/yarn)
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Misc
+*.log
+coverage/
+.nyc_output/

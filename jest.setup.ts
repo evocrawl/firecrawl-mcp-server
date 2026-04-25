@@ -1,11 +1,11 @@
 import { jest } from '@jest/globals';
-import FirecrawlApp from '@mendable/firecrawl-js';
+import EvocrawlApp from '@mendable/evocrawl-js';
 import type {
   SearchResponse,
   BatchScrapeResponse,
   BatchScrapeStatusResponse,
-  FirecrawlDocument,
-} from '@mendable/firecrawl-js';
+  EvocrawlDocument,
+} from '@mendable/evocrawl-js';
 
 // Set test timeout
 jest.setTimeout(30000);
@@ -21,7 +21,7 @@ const mockSearchResponse: SearchResponse = {
       markdown: '# Test Content',
       actions: null as never,
     },
-  ] as FirecrawlDocument<undefined, never>[],
+  ] as EvocrawlDocument<undefined, never>[],
 };
 
 const mockBatchScrapeResponse: BatchScrapeResponse = {
@@ -44,7 +44,7 @@ const mockBatchStatusResponse: BatchScrapeStatusResponse = {
       markdown: '# Test Content',
       actions: null as never,
     },
-  ] as FirecrawlDocument<undefined, never>[],
+  ] as EvocrawlDocument<undefined, never>[],
 };
 
 // Create mock instance methods
@@ -66,7 +66,7 @@ const mockInstance = {
 };
 
 // Mock the module
-jest.mock('@mendable/firecrawl-js', () => ({
+jest.mock('@mendable/evocrawl-js', () => ({
   __esModule: true,
   default: jest.fn().mockImplementation(() => mockInstance),
 }));

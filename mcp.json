@@ -1,0 +1,38 @@
+{
+  "name": "evocrawl-mcp",
+  "version": "3.13.0",
+  "description": "MCP server for Evocrawl — search, scrape, and interact with the web. Supports both cloud and self-hosted instances. Features include web search, scraping, page interaction, batch processing, and LLM-powered content analysis.",
+  "author": "evocrawl",
+  "license": "MIT",
+  "homepage": "https://github.com/evocrawl/evocrawl-mcp-server#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/evocrawl/evocrawl-mcp-server.git"
+  },
+  "keywords": [
+    "mcp",
+    "evocrawl",
+    "web-search",
+    "web-scraping",
+    "web-interaction",
+    "ai",
+    "llm"
+  ],
+  "execution": {
+    "command": "node",
+    "args": [
+      "node_modules/evocrawl-mcp/dist/index.js"
+    ],
+    "env": {
+      "EVOCRAWL_API_KEY": {
+        "description": "Your Evocrawl API key",
+        "required": true
+      }
+    }
+  },
+  "capabilities": {
+    "tools": true,
+    "resources": false,
+    "prompts": false
+  }
+}

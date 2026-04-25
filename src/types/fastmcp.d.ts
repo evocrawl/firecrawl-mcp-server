@@ -1,4 +1,4 @@
-declare module 'firecrawl-fastmcp' {
+declare module 'evocrawl-fastmcp' {
   import type { IncomingHttpHeaders } from 'http';
 
   export interface Logger {
